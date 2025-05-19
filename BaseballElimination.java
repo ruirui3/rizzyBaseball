@@ -26,7 +26,7 @@ public class BaseballElimination {
         In in = new In(filename);
 
         numOfTeams = in.readInt();
-        System.out.println(numOfTeams);
+
         teams = new String[numOfTeams];
 
         wins = new int[numOfTeams];
@@ -61,7 +61,7 @@ public class BaseballElimination {
 
             List<String> certification = new ArrayList<>();
 
-            int maxWinsPossible = wins[x] + remaining[x];
+            int maxWinsPossible = wins[x] + remaining[x]; // right
 
             for (int i = 0; i < numOfTeams; i++) {
 
@@ -85,8 +85,14 @@ public class BaseballElimination {
 
             for (int i = 0; i < numOfTeams; i++) {
 
-                System.out.println(maxWinsPossible - wins[i]);
-                flowNetwork.addEdge(new FlowEdge(i + 2, SINK, maxWinsPossible - wins[i])); // end
+                if (maxWinsPossible - wins[i] >= 0) {
+
+                    flowNetwork.addEdge(new FlowEdge(i + 2, SINK, maxWinsPossible - wins[i])); // end
+                    // System.out.println(maxWinsPossible - wins[i]);
+                } else {
+                    break;
+                }
+
                 if (i == x) {
                     continue;
                 }
@@ -182,8 +188,20 @@ public class BaseballElimination {
     }
 
     public static void main(String[] args) {
-        BaseballElimination division = new BaseballElimination("teams4.txt");
-
+        BaseballElimination division = new BaseballElimination("teams5a.txt");
+        // BaseballElimination division = new
+        // BaseballElimination("baseball\\teams54.txt");
+        for (String team : division.teams()) {
+            if (division.isEliminated(team)) {
+                StdOut.print(team + " is eliminated by the subset R = { ");
+                for (String t : division.certificateOfElimination(team)) {
+                    StdOut.print(t + " ");
+                }
+                StdOut.println("}");
+            } else {
+                StdOut.println(team + " is not eliminated");
+            }
+        }
     }
 
 }
