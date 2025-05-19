@@ -9,6 +9,27 @@ import edu.princeton.cs.algs4.FordFulkerson;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 
+/**
+ * @author Rui Zhao attests that this code is their original work and was
+ *         written in compliance with the class Academic Integrity and
+ *         Collaboration Policy found in the syllabus.
+ */
+
+/*
+ * Honestly although this is supposed to be a more easier type of project, I
+ * felt like this was
+ * one of the hardest for me. The specification kind of gave instructions on
+ * what to do but
+ * ultimately the stuff on the inside is more than the stuff on the outside.
+ * I've gotten great
+ * help from my group mates like the total verticies thing. I oroginally came up
+ * with some absurd
+ * formula for total verticies but my groupmates taught me how to compute
+ * the total verticies. I really do not know how the certification list is semi
+ * wrong so I might about ask that.
+ * 
+ */
+
 public class BaseballElimination {
 
     private int numOfTeams;
@@ -189,8 +210,7 @@ public class BaseballElimination {
 
     public static void main(String[] args) {
         BaseballElimination division = new BaseballElimination("teams5a.txt");
-        // BaseballElimination division = new
-        // BaseballElimination("baseball\\teams54.txt");
+
         for (String team : division.teams()) {
             if (division.isEliminated(team)) {
                 StdOut.print(team + " is eliminated by the subset R = { ");
