@@ -1,7 +1,9 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
+import edu.princeton.cs.algs4.FlowNetwork;
 import edu.princeton.cs.algs4.FordFulkerson;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
@@ -10,68 +12,47 @@ public class BaseballElimination {
 
     private int numOfTeams;
     private FordFulkerson s;
-    private HashMap<String, BaseballElimination.Team> teams;
-    
-    public static class Team {
-        private int win;
-        private int loss;
-        private int remain;
-        private int[] against;
-        private int teamID;
-        private final int SOURCE = 0;
-        private final int SINK = 1;
+    private String[] teams;
+    private int[][] matchesAgainst;
+    private int[] wins;
+    private int[] losses;
+    private int[] remaining;
 
-        public Team(int wins, int losses, int remaining, int[] againstTeams, int theTeamID) {
-            win = wins;
-            loss = losses;
-            remain = remaining;
-            against = againstTeams;
-            teamID = theTeamID;
-        }
-
-        public int getWins() {
-            return win;
-        }
-
-        public int getLosses() {
-            return loss;
-        }
-
-        public int getRemaining() {
-            return remain;
-        }
-
-        public int getTeamAgainst(int ID) {
-            return against[ID];
-        }
-
-        public int getID() {
-            return teamID;
-        }
-
-    } 
+    private int teamToIndex(String team) {
+        return 
+    }
 
     public BaseballElimination(String filename) {
 
     In in = new In(filename);
 
     numOfTeams = in.readInt(); 
-    int[] teamsAgainst = new int[numOfTeams];
-    teams = new HashMap<String, BaseballElimination.Team>();
+    teams = new String[numOfTeams];
+    wins = new int[numOfTeams];
+    losses = new int[numOfTeams];
+    remaining = new int[numOfTeams];
+    matchesAgainst = new int[numOfTeams][numOfTeams];
+    
+
     for (int i = 0; i<numOfTeams; i++) {
-        String team = in.readString();
-        int win = in.readInt();
-        int lose = in.readInt();
-        int remain = in.readInt();
+        teams[i] = in.readString();
+        wins[i] = in.readInt();
+        losses[i] = in.readInt();
+        remaining[i] = in.readInt();
         
         for (int j = 0; j<numOfTeams; j++) {
-            teamsAgainst[j] = in.readInt();
+            matchesAgainst[i][j] = in.readInt();
         }
-
-            teams.put(team, new Team(win, lose, remain, teamsAgainst, i));
+        
     } 
 
-    
+    //FlowNetwork flowNetwork = new FlowNetwork(2 + numOfTeams + (numOfTeams-1)*(numOfTeams-2)/2);
+
+    for (int i = 0; i<numOfTeams; i++) {
+
+
+
+    }
 
 
 
@@ -83,16 +64,16 @@ public class BaseballElimination {
         
     }   
     public int wins(String team) {
-        return teams.get(team).getWins();
+        return 
     }  
     public int losses(String team) {
-        return teams.get(team).getLosses();
+        return 
     } 
     public int remaining(String team) {
-        return teams.get(team).getRemaining();
+        return 
     }  
     public int against(String team1, String team2)  {
-        return teams.get(team1).getTeamAgainst(teams.get(team2).getID());
+        return 
     }  
     public boolean isEliminated(String team)   {
     
