@@ -20,7 +20,7 @@ public class BoggleSolver {
         ts = new TrieST69();
         for (String word : dictionary) {
             if (word.length() >= 3) {
-                ts.add(word.toUpperCase()); // ensure uppercase consistency
+                ts.add(word);
             }
         }
     }
@@ -56,7 +56,7 @@ public class BoggleSolver {
             prefix.append(letter);
         }
 
-        String currentWord = prefix.toString().toUpperCase();
+        String currentWord = prefix.toString();
 
         if (invalidPrefixCache.contains(currentWord)) {
             prefix.setLength(lengthBefore);
@@ -97,9 +97,9 @@ public class BoggleSolver {
 
     public int scoreOf(String word) {
         if (word == null) {
-            throw new IllegalArgumentException("Word cannot be null.");
+            throw new IllegalArgumentException();
         }
-        word = word.toUpperCase();
+
         if (!ts.contains(word) || word.length() < 3)
             return 0;
 
@@ -127,4 +127,19 @@ public class BoggleSolver {
         }
         StdOut.println("Score = " + score);
     }
+
+    /*
+     * public static void main(String[] args) {
+     * In in = new In("things/dictionary-yawl.txt");
+     * String[] dictionary = in.readAllStrings();
+     * BoggleSolver solver = new BoggleSolver(dictionary);
+     * BoggleBoard board = new BoggleBoard("things/board-points26539.txt");
+     * int score = 0;
+     * for (String word : solver.getAllValidWords(board)) {
+     * StdOut.println(word);
+     * score += solver.scoreOf(word);
+     * }
+     * StdOut.println("Score = " + score);
+     * }
+     */
 }
