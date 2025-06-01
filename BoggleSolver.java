@@ -1,5 +1,8 @@
 import java.util.HashSet;
 
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdOut;
+
 public class BoggleSolver {
 
     private final TrieST69 ts;
@@ -46,12 +49,13 @@ public class BoggleSolver {
     private void buildValidWords(HashSet<String> validWords, BoggleBoard board, boolean[][] visited,
             String candidateWord, int r, int c) {
 
-        String word = candidateWord + board.getLetter(r, c); // String builder optimization? StringBuilder
+        char letter = board.getLetter(r, c);
+        String word = candidateWord + letter; // String builder optimization? StringBuilder
 
-        if (board.getLetter(r, c) == 'Q') {
+        if (letter == 'Q') {
             word += 'U';
         }
-
+        word = word.toUpperCase();
         visited[r][c] = true;
 
         // Check ActivePrefix (the ones that you have already checked) hashset - if it's
@@ -73,14 +77,17 @@ public class BoggleSolver {
                 // need to check it is not previous node, not itself, and not out of bounds
                 if (!(ri == 0 && cj == 0)) {
                     if (isValidMove(board, visited, r + ri, c + cj)) {
+
                         buildValidWords(validWords, board, visited, word, r + ri, c + cj);
-                        visited[r + ri][c + cj] = false;
+
                     }
                 }
 
             }
 
         }
+
+        visited[r][c] = false;
 
     }
 
@@ -90,11 +97,9 @@ public class BoggleSolver {
         // if already visited
         // if out of bounds
 
-        if (r < 0 || r > visited.length - 1 || c < 0 || c > visited[0].length || visited[r][c] == true) {
-            return false;
-        }
-
-        return true;
+        return r >= 0 && r < board.rows() &&
+                c >= 0 && c < board.cols() &&
+                !visited[r][c];
 
     }
 
@@ -117,6 +122,19 @@ public class BoggleSolver {
             return 5;
         }
         return 11;
+    }
+
+    public static void main(String[] args) {
+        In in = new In("dictionary-yawl.txt");
+        String[] dictionary = in.readAllStrings();
+        BoggleSolver solver = new BoggleSolver(dictionary);
+        BoggleBoard board = new BoggleBoard("board-q.txt");
+        int score = 0;
+        for (String word : solver.getAllValidWords(board)) {
+            StdOut.println(word);
+            score += solver.scoreOf(word);
+        }
+        StdOut.println("Score = " + score);
     }
 
 }
