@@ -1,4 +1,6 @@
 import java.util.HashSet;
+import java.util.Set;
+import java.util.HashMap;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
@@ -6,129 +8,118 @@ import edu.princeton.cs.algs4.StdOut;
 public class BoggleSolver {
 
     private final TrieST69 ts;
-    private HashSet<String> validWords;
+    private Set<String> validWords;
+    private Set<String> prefixCache;
+    private Set<String> invalidPrefixCache;
 
     public BoggleSolver(String[] dictionary) {
-
         if (dictionary == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Dictionary cannot be null.");
         }
 
         ts = new TrieST69();
-
         for (String word : dictionary) {
-            ts.add(word);
+            if (word.length() >= 3) {
+                ts.add(word.toUpperCase()); // ensure uppercase consistency
+            }
         }
-
     }
 
     public Iterable<String> getAllValidWords(BoggleBoard board) {
-
         if (board == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Board cannot be null.");
         }
 
-        HashSet<String> validWords = new HashSet<String>();
-
+        validWords = new HashSet<>();
+        prefixCache = new HashSet<>();
+        invalidPrefixCache = new HashSet<>();
         boolean[][] visited = new boolean[board.rows()][board.cols()];
 
         for (int r = 0; r < board.rows(); r++) {
-
             for (int c = 0; c < board.cols(); c++) {
-
-                buildValidWords(validWords, board, visited, "", r, c);
-
+                dfs(board, visited, new StringBuilder(), r, c);
             }
-
         }
 
         return validWords;
-
     }
 
-    private void buildValidWords(HashSet<String> validWords, BoggleBoard board, boolean[][] visited,
-            String candidateWord, int r, int c) {
+    private void dfs(BoggleBoard board, boolean[][] visited, StringBuilder prefix, int r, int c) {
+        if (!isValidMove(board, visited, r, c))
+            return;
 
+        int lengthBefore = prefix.length();
         char letter = board.getLetter(r, c);
-        String word = candidateWord + letter; // String builder optimization? StringBuilder
-
         if (letter == 'Q') {
-            word += 'U';
+            prefix.append("QU");
+        } else {
+            prefix.append(letter);
         }
-        word = word.toUpperCase();
-        visited[r][c] = true;
 
-        // Check ActivePrefix (the ones that you have already checked) hashset - if it's
-        // not active then check the trie
-        if (!ts.keysWithPrefix(word).iterator().hasNext()) {
-            visited[r][c] = false;
+        String currentWord = prefix.toString().toUpperCase();
+
+        if (invalidPrefixCache.contains(currentWord)) {
+            prefix.setLength(lengthBefore);
             return;
         }
 
-        if (word.length() > 2 && ts.contains(word)) {
-            validWords.add(word);
+        if (!prefixCache.contains(currentWord) && !ts.keysWithPrefix(currentWord).iterator().hasNext()) {
+            invalidPrefixCache.add(currentWord);
+            prefix.setLength(lengthBefore);
+            return;
+        } else {
+            prefixCache.add(currentWord);
         }
 
-        // check 8 possible moves (directional)
-        for (int ri = -1; ri < 2; ri++) {
+        visited[r][c] = true;
 
-            for (int cj = -1; cj < 2; cj++) {
+        if (currentWord.length() >= 3 && ts.contains(currentWord)) {
+            validWords.add(currentWord);
+        }
 
-                // need to check it is not previous node, not itself, and not out of bounds
-                if (!(ri == 0 && cj == 0)) {
-                    if (isValidMove(board, visited, r + ri, c + cj)) {
-
-                        buildValidWords(validWords, board, visited, word, r + ri, c + cj);
-
-                    }
+        for (int dr = -1; dr <= 1; dr++) {
+            for (int dc = -1; dc <= 1; dc++) {
+                if (dr != 0 || dc != 0) {
+                    dfs(board, visited, prefix, r + dr, c + dc);
                 }
-
             }
-
         }
 
         visited[r][c] = false;
-
+        prefix.setLength(lengthBefore);
     }
 
     private boolean isValidMove(BoggleBoard board, boolean[][] visited, int r, int c) {
-
-        // bounds
-        // if already visited
-        // if out of bounds
-
         return r >= 0 && r < board.rows() &&
                 c >= 0 && c < board.cols() &&
                 !visited[r][c];
-
     }
 
     public int scoreOf(String word) {
-
-        if (word == null || word.length() < 3) {
-            throw new IllegalArgumentException();
+        if (word == null) {
+            throw new IllegalArgumentException("Word cannot be null.");
         }
+        word = word.toUpperCase();
+        if (!ts.contains(word) || word.length() < 3)
+            return 0;
 
-        if (word.length() == 3 || word.length() == 4) {
+        int len = word.length();
+        if (len == 3 || len == 4)
             return 1;
-        }
-        if (word.length() == 5) {
+        if (len == 5)
             return 2;
-        }
-        if (word.length() == 6) {
+        if (len == 6)
             return 3;
-        }
-        if (word.length() == 7) {
+        if (len == 7)
             return 5;
-        }
         return 11;
     }
 
     public static void main(String[] args) {
-        In in = new In("dictionary-yawl.txt");
+        In in = new In("things/dictionary-16q.txt");
         String[] dictionary = in.readAllStrings();
         BoggleSolver solver = new BoggleSolver(dictionary);
-        BoggleBoard board = new BoggleBoard("board-q.txt");
+        BoggleBoard board = new BoggleBoard("things/board-16q.txt");
         int score = 0;
         for (String word : solver.getAllValidWords(board)) {
             StdOut.println(word);
@@ -136,5 +127,4 @@ public class BoggleSolver {
         }
         StdOut.println("Score = " + score);
     }
-
 }
