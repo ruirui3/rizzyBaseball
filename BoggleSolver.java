@@ -6,7 +6,7 @@ import edu.princeton.cs.algs4.StdOut;
 public class BoggleSolver {
 
     private final TrieST69 ts;
-    HashSet<String> validWords;
+    private HashSet<String> validWords;
 
     public BoggleSolver(String[] dictionary) {
 
