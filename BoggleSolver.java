@@ -5,6 +5,12 @@ import java.util.HashMap;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 
+/**
+ * @author Rui Zhao attests that this code is their original work and was
+ *         written in compliance with the class Academic Integrity and
+ *         Collaboration Policy found in the syllabus.
+ */
+
 public class BoggleSolver {
 
     private final TrieST69 ts;
@@ -37,14 +43,14 @@ public class BoggleSolver {
 
         for (int r = 0; r < board.rows(); r++) {
             for (int c = 0; c < board.cols(); c++) {
-                dfs(board, visited, new StringBuilder(), r, c);
+                buildValidWords(board, visited, new StringBuilder(), r, c);
             }
         }
 
         return validWords;
     }
 
-    private void dfs(BoggleBoard board, boolean[][] visited, StringBuilder prefix, int r, int c) {
+    private void buildValidWords(BoggleBoard board, boolean[][] visited, StringBuilder prefix, int r, int c) {
         if (!isValidMove(board, visited, r, c))
             return;
 
@@ -80,7 +86,7 @@ public class BoggleSolver {
         for (int dr = -1; dr <= 1; dr++) {
             for (int dc = -1; dc <= 1; dc++) {
                 if (dr != 0 || dc != 0) {
-                    dfs(board, visited, prefix, r + dr, c + dc);
+                    buildValidWords(board, visited, prefix, r + dr, c + dc);
                 }
             }
         }
@@ -104,14 +110,18 @@ public class BoggleSolver {
             return 0;
 
         int len = word.length();
-        if (len == 3 || len == 4)
+        if (len == 3 || len == 4) {
             return 1;
-        if (len == 5)
+        }
+        if (len == 5) {
             return 2;
-        if (len == 6)
+        }
+        if (len == 6) {
             return 3;
-        if (len == 7)
+        }
+        if (len == 7) {
             return 5;
+        }
         return 11;
     }
 
